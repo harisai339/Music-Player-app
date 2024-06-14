@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music-app</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+     <div class="container">
+        <img src="images/image-1.jpg" id="image">
+
+        <h2 class="songname">"Driver license"</h2>
+        <h3 class="singername">"Olivia Rodrigo"</h3>
+
+        <div class="progresscontainer" id="progresscontainer">
+            <div class="progressbar"></div>
+        </div>
+
+       <div class="time">
+        <div class="currenttime">0:00</div>
+        <div class="totaltime">2:54</div>
+       </div>
+
+       <div class="icons">
+        <i class="fa-solid fa-shuffle" id="shuffle"></i>
+        <i class="fa-solid fa-backward" id="backward"></i> 
+        <i class="fa-solid fa-play" id="play"></i>
+        <i class="fa-solid fa-forward" id="forward"></i>
+        <i class="fa-solid fa-heart" id ="heart"></i>
+       </div>
+        
+       <audio src="musics/music-1.mp3"></audio>
+       
+     </div>
+
+     <script src="app.js"></script>
+</body>
+</html>
+
+.container{
+    border: 1px solid #33394f;
+    width:430px;
+    height:550px;
+    background-color:  #33394f;;
+    margin-left: 630px;
+    margin-top: 150px;
+    border-radius: 5%;
+    padding: 10px;
+}
+
+img{
+    width:380px;
+    height:300px;
+   margin-left: 25px;
+    margin-top: 30px;
+    border-radius: 5%;
+}
+h2,h3{
+    text-align: center;
+    color: goldenrod;
+}
+h2{
+    font-weight: 900;
+}
+.progresscontainer{
+    border: 1px solid white;
+    width:100%;
+    height: 5px;
+    border-radius: 10px;
+    box-shadow: 2px 4px 8px white;
+}
+.progressbar{
+    border: 1px solid goldenrod;
+    width:0%;
+    height:5px;
+    background-color: goldenrod;
+}
+.currenttime,.totaltime{
+    color: goldenrod;
+    font-weight: 900;
+}
+.time{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+i{
+    color: white;
+    font-size: 25px;
+}
+.icons{
+    display: flex;
+    justify-content: space-around;
+    margin: 10px;
+    align-items: center;
+}
+i:nth-child(3){
+    border: 1px solid white;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+
+const PlayButton = document.getElementById("play")
+const AudioFile  = document.querySelector("audio")
+
+let isMusicPlaying = false
+
+function playMusic()
+{
+    //Logic to replace play icon with pause icon
+    PlayButton.classList.replace("fa-play", "fa-pause")//<i class="fa-solid fa-play" id="play"></i>
+    AudioFile.play()
+    isMusicPlaying = true
+}
+
+function pauseMusic()
+{
+    PlayButton.classList.replace("fa-pause", "fa-play")
+    AudioFile.pause()
+    isMusicPlaying = false
+}
+
+PlayButton.addEventListener("click", function()
+{
+     if(isMusicPlaying)
+     {
+         pauseMusic()
+     }
+     else
+    {
+         playMusic()
+    }
+})
+ 
+
+//I wanna to get know the  current time and the total duration of the audio file
+
+ const TotalTime = document.querySelector(".totaltime")
+ const CurrentTime = document.querySelector(".currenttime")
+ const ProgressBar = document.querySelector(".progressbar")
+
+ AudioFile.addEventListener("timeupdate", function(output)
+ {
+    let AudioCurrentTime = output.srcElement.currentTime
+    let AudioTotalTime = output.srcElement.duration
+
+  let MusicCompletedPercentage = AudioCurrentTime / AudioTotalTime * 100
+  ProgressBar.style.width = `${MusicCompletedPercentage}%`
+
+
+  let AudioTotalTimeInMinutes = Math.floor(AudioTotalTime / 60) //2 mints
+  
+  let AudioTotalTimeInSeconds = Math.floor(AudioTotalTime % 60) //seconds
+
+  if(AudioTotalTimeInSeconds < 10) // 0 to 9 seconds
+  {
+      AudioTotalTimeInSeconds = `0${AudioTotalTimeInSeconds}`
+  }
+
+  TotalTime.textContent = `${AudioTotalTimeInMinutes}:${AudioTotalTimeInSeconds}`
+
+
+  let AudioCurrentTimeInMinutes = Math.floor(AudioCurrentTime / 60) //2 mints
+
+  let AudioCurrentTimeInSeconds = Math.floor(AudioCurrentTime  % 60) //seconds
+
+  if(AudioCurrentTimeInSeconds < 10) // 0 to 9 seconds
+  {
+       AudioCurrentTimeInSeconds = `0${AudioCurrentTimeInSeconds}`
+  }
+
+  CurrentTime.textContent = `${AudioCurrentTimeInMinutes}:${AudioCurrentTimeInSeconds}`
+
+})
+
+//store song details
+
+  const ForwardButton = document.getElementById("forward")
+
+  const songsData = [
+    {
+        songName: "Calmdown",
+        singerName: "Ed Sheeran",
+        data: 2
+     },
+     {
+         songName: "Unstoppable",
+         singerName: "Sia",
+         data: 3
+     },
+     {
+         songName: "Driver license",
+         singerName: "Olivia Rodrigo",
+         data: 1
+     }
+]
+
+   const SongName = document.getElementById("songname")
+   const SingerName = document.getElementById("singername")
+   const Image = document.getElementById("image")
+   const BackwardButton = document.getElementById("backward")
+   const Heart = document.getElementById("heart")
+
+   let songIndex = 0
+
+   function displaySong(){
+   
+    SongName.textContent = songsData[songIndex].songName
+    SingerName.textContent = songsData[songIndex].singerName
+    Image.src=`images/image-${songsData[songIndex].data}.jpg`
+    AudioFile.src=`musics/music-${songsData[songIndex].data}.mp3`
+
+    playMusic()
+
+   }
+
+
+  ForwardButton.addEventListener("click", function()
+  {
+
+     Heart.style.color = "white"
+    //Logic to load the songs one by one on the web page
+     displaySong()
+
+      songIndex++
+
+      //if songIndex = 1 --> reached the last song
+
+      if(songIndex > songsData.length -1)
+      {
+        songIndex = 0
+      }
+    })
+BackwardButton.addEventListener("click", function()
+{
+    Heart.style.color = "white"
+
+//Logic to load the songs one by one on the web page
+
+ displaySong()
+ playMusic()
+
+songIndex --
+
+//if songIndex = 1 --> reached the last song
+
+if(songIndex < 0)
+{
+   songIndex = songsData.length - 1
+}
+
+}) 
+
+const ShuffleButton = document.getElementById("shuffle")
+
+ShuffleButton.addEventListener("click", function()
+{
+    //Logic to play randomsong
+
+    let randomsongIndex = Math.floor(Math.random () * 3)
+    songIndex = randomsongIndex
+
+    displaySong() 
+})
+Heart.addEventListener("click", function()
+{
+    // Change the color to red and also store the details(Song Name and Singer Name)
+    Heart.style.color = "red"
+    // Adding the details to local storage
+    localStorage.setItem(SongName.textContent,SingerName.textContent)
+})
+
+Heart.addEventListener("dblclick", function()
+{
+    Heart.style.color = "white"
+
+    localStorage.removeItem(SongName.textContent,SingerName.textContent)
+})
+
+
+
+const ProgressContainer = document.getElementById("progresscontainer")
+
+ProgressContainer.addEventListener("click", function(event){
+
+    //Logic to get the distance from the starting point
+    let totalWidthFromTheStart = event.offsetX
+    let totalWidth = event.srcElement.offsetWidth
+
+    ProgressBar.style.width = `${event.offsetX}px`
+
+    AudioFile.currentTime = totalWidthFromTheStart / totalWidth * AudioFile.duration
+
+
+})
+
+
